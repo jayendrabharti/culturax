@@ -1,18 +1,15 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { anurati } from "@/utils/fonts";
 import { Menu, X } from "lucide-react";
-import { FaHome } from "react-icons/fa";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ThemeSwitch from "./ThemeSwitch";
 import { useState } from "react";
 import { Button } from "./ui/button";
 import Reveal from "./animations/Reveal";
-import { appName } from "@/utils/data";
-
-const NavBarLinks = [{ name: "Home", href: "/", icon: FaHome }];
+import Logo from "./Logo";
+import { NavBarLinks } from "@/utils/navLinks";
 
 export default function NavBar() {
   const pathname = usePathname();
@@ -38,25 +35,16 @@ export default function NavBar() {
         className={cn(
           "flex items-center justify-between",
           "mx-auto px-5 md:px-10",
-          "w-full max-w-4xl space-x-3"
+          "w-full space-x-3"
         )}
       >
-        <Link
-          href="/home"
-          prefetch={true}
-          className={cn(
-            anurati.className,
-            "cursor-pointer text-2xl font-bold w-max"
-          )}
-        >
-          {appName.toUpperCase()}
-        </Link>
+        <Logo size={"sm"} />
 
         <div
           className={cn(
             `flex flex-col md:flex-row`,
             `items-start md:items-center`,
-            `justify-end`, //change this value for links positioning
+            `justify-center`,
             `gap-3 md:gap-1.5`,
             `top-full left-0 w-full`,
             "px-5 py-4 md:p-0",
@@ -71,7 +59,29 @@ export default function NavBar() {
           )}
         >
           {NavBarLinks.map((link, index) => {
+            if (!link.showInNav) return null;
+
             const active = isActive(link.href);
+
+            if (link.special) {
+              return (
+                <Link
+                  href={link.href}
+                  key={index}
+                  onClick={() => setExpanded(false)}
+                  className="md:ml-0 ml-auto md:w-auto w-full"
+                >
+                  <Button
+                    variant={active ? "default" : "outline"}
+                    className="w-full rounded-full"
+                  >
+                    <link.icon />
+
+                    {link.name}
+                  </Button>
+                </Link>
+              );
+            }
 
             return (
               <Link
@@ -97,7 +107,7 @@ export default function NavBar() {
           })}
         </div>
 
-        <ThemeSwitch />
+        <ThemeSwitch className="md:ml-0 ml-auto" />
 
         <Button
           variant={"ghost"}
