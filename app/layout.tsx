@@ -8,15 +8,15 @@ import Footer from "@/components/Footer";
 
 export function generateMetadata(): Metadata {
   return {
-    title: `CultraX.`,
+    title: `CulturaX.`,
     description:
       "Collision of talent, passion and fun. 10th - 30th September 2025. Mark your calendars!",
     openGraph: {
-      title: `CultraX`,
+      title: `CulturaX`,
       description:
         "Collision of talent, passion and fun. 10th - 30th September 2025. Mark your calendars!",
       // url: "",
-      siteName: `CultraX`,
+      siteName: `CulturaX`,
       images: [
         {
           url: "/images/fest_white_logo.png",

@@ -35,7 +35,7 @@ export default async function Footer() {
         {/* Bottom Section */}
         <div className="border-border mt-8 flex flex-col items-center justify-between border-t pt-6 md:flex-row">
           <div className="text-muted-foreground mb-4 text-sm md:mb-0">
-            © 2025 CultraX.
+            © 2025 CulturaX.
           </div>
           <div className="flex items-center gap-4 text-sm">
             <span className="text-muted-foreground">Developed by</span>

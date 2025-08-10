@@ -1,4 +1,4 @@
-export const appName: string = "CultraX";
+export const appName: string = "CulturaX";
 
 interface Social {
   name: string;
