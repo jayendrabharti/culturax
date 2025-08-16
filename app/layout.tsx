@@ -1,10 +1,10 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { ThemeProvider } from "@/providers/ThemeProvider";
-import NavBar from "@/components/NavBar";
-import Main from "@/components/Main";
 import { cn } from "@/lib/utils";
-import Footer from "@/components/Footer";
+import { Toaster } from "@/components/ui/sonner";
+import NextAuthSessionProviders from "@/providers/NextAuthSessionProvider";
+import { DataProvider } from "@/providers/DataProvider";
 
 export function generateMetadata(): Metadata {
   return {
@@ -15,7 +15,7 @@ export function generateMetadata(): Metadata {
       title: `CulturaX`,
       description:
         "Collision of talent, passion and fun. 10th - 30th September 2025. Mark your calendars!",
-      // url: "",
+      url: "https://www.culturax.iqlipse.space",
       siteName: `CulturaX`,
       images: [
         {
@@ -38,17 +38,14 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className="h-full overflow-hidden">
       <body className={cn("h-full w-full flex flex-col overflow-hidden")}>
-        <ThemeProvider>
-          <NavBar />
-          <Main
-            className={cn(
-              "flex w-full flex-col items-center overflow-y-auto overflow-x-hidden flex-1 min-h-0"
-            )}
-          >
-            {children}
-            <Footer />
-          </Main>
-        </ThemeProvider>
+        <NextAuthSessionProviders>
+          <DataProvider>
+            <ThemeProvider>
+              {children}
+              <Toaster richColors />
+            </ThemeProvider>
+          </DataProvider>
+        </NextAuthSessionProviders>
       </body>
     </html>
   );

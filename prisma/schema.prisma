@@ -1,0 +1,165 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Profile {
+  id                 String    @id @default(cuid())
+  name               String
+  email              String    @unique
+  phone              String?
+  bio                String?
+  image              String?
+  registrationNumber String?
+  course             String?
+  year               String?
+  graduationYear     String?
+  dayScholar         Boolean?
+  dateOfBirth        DateTime?
+  isAdmin            Boolean   @default(false)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  participants Participant[]
+
+  @@map("profiles")
+}
+
+model Event {
+  id                     String    @id @default(cuid())
+  name                   String
+  description            String
+  location               String
+  venue                  String?
+  coverImage             String
+  gallery                String[]
+  content                String?
+  rules                  String?
+  prizes                 String?
+  contactInfo            String?
+  eventType              EventType @default(TEAM)
+  minParticipantsPerTeam Int?
+  maxParticipantsPerTeam Int?
+  minTeams               Int?
+  maxTeams               Int?
+  registrationFee        Float     @default(0)
+  startsAt               DateTime
+  endsAt                 DateTime
+  registrationStartsAt   DateTime
+  registrationEndsAt     DateTime
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+
+  teams         Team[]
+  participants  Participant[]
+  winners       Winner[]
+  announcements Announcement[]
+
+  @@map("events")
+}
+
+model Team {
+  id            String              @id @default(cuid())
+  name          String
+  description   String?
+  eventId       String
+  isIndividual  Boolean             @default(false)
+  leaderEmail   String // Team leader's email
+  status        ParticipationStatus @default(REGISTERED)
+  totalFee      Float               @default(0)
+  isPaid        Boolean             @default(false)
+  paymentId     String? // Payment reference
+  paymentMethod String? // UPI, Card, Cash, etc.
+  paidAt        DateTime?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  // Relations
+  event        Event         @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  participants Participant[]
+  winners      Winner[]
+
+  @@unique([name, eventId]) // Team name must be unique per event
+  @@map("teams")
+}
+
+model Participant {
+  id        String              @id @default(cuid())
+  name      String
+  email     String?
+  phone     String?
+  year      String?
+  course    String?
+  eventId   String
+  teamId    String
+  status    ParticipationStatus @default(REGISTERED)
+  isLeader  Boolean             @default(false)
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+
+  profile Profile? @relation(fields: [email], references: [email], onDelete: SetNull)
+  event   Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  team    Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([email, eventId])
+  @@map("participants")
+}
+
+model Winner {
+  id        String   @id @default(cuid())
+  eventId   String
+  teamId    String
+  position  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  team  Team  @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@map("winners")
+}
+
+model Announcement {
+  id          String           @id @default(cuid())
+  title       String
+  content     String
+  type        AnnouncementType @default(GENERAL)
+  eventId     String? // Null for global announcements
+  isPublished Boolean          @default(false)
+  isPinned    Boolean          @default(false)
+  readBy      String[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  // Relations
+  event Event? @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@map("announcements")
+}
+
+enum EventType {
+  INDIVIDUAL
+  TEAM
+  BOTH
+}
+
+enum ParticipationStatus {
+  REGISTERED
+  CONFIRMED
+  CANCELLED
+  DISQUALIFIED
+}
+
+enum AnnouncementType {
+  GENERAL
+  URGENT
+  WINNER
+  SCHEDULE_UPDATE
+  REGISTRATION
+}

@@ -10,6 +10,9 @@ import { Button } from "./ui/button";
 import Reveal from "./animations/Reveal";
 import Logo from "./Logo";
 import { NavBarLinks } from "@/utils/navLinks";
+import { useSession } from "next-auth/react";
+import { SessionWithProfile } from "@/types/auth";
+import UserButton from "./auth/UserButton";
 
 export default function NavBar() {
   const pathname = usePathname();
@@ -108,6 +111,8 @@ export default function NavBar() {
         </div>
 
         <ThemeSwitch className="md:ml-0 ml-auto" />
+
+        <UserButton />
 
         <Button
           variant={"ghost"}
