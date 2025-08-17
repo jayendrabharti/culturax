@@ -154,6 +154,7 @@ export function TeamEventRegistration({
         router.push(`/events/${event.id}/register/pay`);
       }
     } catch (error) {
+      console.error("Registration error:", error);
       toast.error("An unexpected error occurred");
     } finally {
       setIsSubmitting(false);

@@ -47,7 +47,7 @@ export default async function SchedulePage() {
         </RevealHero>
 
         <div className="space-y-12">
-          {sortedDates.map((dateKey, dateIndex) => {
+          {sortedDates.map((dateKey) => {
             const date = new Date(dateKey);
             const dayEvents = eventsByDate[dateKey];
 
@@ -73,7 +73,7 @@ export default async function SchedulePage() {
                   <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-border"></div>
 
                   <div className="space-y-8">
-                    {dayEvents.map((event, eventIndex) => {
+                    {dayEvents.map((event) => {
                       const eventStatus = getEventStatus(event);
                       const startTime = new Date(event.startsAt);
                       const endTime = new Date(event.endsAt);

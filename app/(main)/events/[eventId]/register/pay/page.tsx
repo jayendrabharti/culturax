@@ -5,7 +5,6 @@ import { authOptions } from "@/utils/authOptions";
 import { SessionWithProfile } from "@/types/auth";
 import {
   CheckCheckIcon,
-  CircleDollarSignIcon,
   LayoutDashboardIcon,
   AlertTriangle,
 } from "lucide-react";

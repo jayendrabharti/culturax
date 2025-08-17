@@ -9,7 +9,6 @@ import { Separator } from "@/components/ui/separator";
 import {
   CalendarIcon,
   MapPinIcon,
-  UsersIcon,
   ClockIcon,
   DollarSignIcon,
   UserPlus2Icon,
