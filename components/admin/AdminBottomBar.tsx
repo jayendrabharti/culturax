@@ -4,14 +4,7 @@ import { usePathname } from "next/navigation";
 import React from "react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { LuMessageSquareText, LuLayoutDashboard, LuUser } from "react-icons/lu";
 import { navItems } from "./AdminSideBar";
-
-interface NavItem {
-  title: string;
-  href: string;
-  icon: React.ElementType;
-}
 
 export default function AdminBottomBar({
   className = "",
@@ -29,7 +22,10 @@ export default function AdminBottomBar({
     >
       <div className="flex items-center justify-around px-4 py-2">
         {navItems.map((navLink, index) => {
-          const active = pathname === navLink.href;
+          const active =
+            (navLink.href === "/admin" && pathname === "/admin") ||
+            (navLink.href !== "/admin" &&
+              (pathname === navLink.href || pathname.startsWith(navLink.href)));
           return (
             <Link
               key={index}

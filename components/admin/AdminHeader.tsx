@@ -17,11 +17,11 @@ export default function AdminHeader({
     <header
       className={cn(
         "bg-background border-border flex flex-row items-center space-x-3 border-b p-3 shadow-md",
-        className,
+        className
       )}
     >
       <Link
-        href="/home"
+        href="/"
         prefetch={true}
         className={cn(anurati.className, "cursor-pointer text-2xl font-bold")}
       >

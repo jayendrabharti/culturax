@@ -35,118 +35,93 @@ model Event {
   name                   String
   description            String
   location               String
-  venue                  String?
   coverImage             String
-  gallery                String[]
-  content                String?
-  rules                  String?
-  prizes                 String?
-  contactInfo            String?
+  about                  Json?
   eventType              EventType @default(TEAM)
   minParticipantsPerTeam Int?
   maxParticipantsPerTeam Int?
   minTeams               Int?
   maxTeams               Int?
-  registrationFee        Float     @default(0)
+  registrationFee        Int       @default(0)
   startsAt               DateTime
   endsAt                 DateTime
   registrationStartsAt   DateTime
   registrationEndsAt     DateTime
+  registrationOpen       Boolean   @default(true)
   createdAt              DateTime  @default(now())
   updatedAt              DateTime  @updatedAt
 
   teams         Team[]
   participants  Participant[]
-  winners       Winner[]
-  announcements Announcement[]
 
   @@map("events")
 }
 
 model Team {
-  id            String              @id @default(cuid())
-  name          String
-  description   String?
-  eventId       String
-  isIndividual  Boolean             @default(false)
-  leaderEmail   String // Team leader's email
-  status        ParticipationStatus @default(REGISTERED)
-  totalFee      Float               @default(0)
-  isPaid        Boolean             @default(false)
-  paymentId     String? // Payment reference
-  paymentMethod String? // UPI, Card, Cash, etc.
-  paidAt        DateTime?
-  createdAt     DateTime            @default(now())
-  updatedAt     DateTime            @updatedAt
+  id              String              @id @default(cuid())
+  name            String
+  description     String?
+  eventId         String
+  isIndividual    Boolean             @default(false)
+  leaderEmail     String // Team leader's email
+  status          ParticipationStatus @default(REGISTERED)
+  registrationFee Int                 @default(0)
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
 
   // Relations
   event        Event         @relation(fields: [eventId], references: [id], onDelete: Cascade)
   participants Participant[]
-  winners      Winner[]
+  payments     Payments[]
+  
+  isPaid        Boolean       @default(false)
 
   @@unique([name, eventId]) // Team name must be unique per event
   @@map("teams")
 }
 
 model Participant {
-  id        String              @id @default(cuid())
-  name      String
-  email     String?
-  phone     String?
-  year      String?
-  course    String?
-  eventId   String
-  teamId    String
-  status    ParticipationStatus @default(REGISTERED)
-  isLeader  Boolean             @default(false)
-  createdAt DateTime            @default(now())
-  updatedAt DateTime            @updatedAt
+  id              String              @id @default(cuid())
+  name            String
+  email           String?
+  phone           String?
+  year            String?
+  course          String?
+  eventId         String
+  teamId          String?
+  status          ParticipationStatus @default(REGISTERED)
+  registrationFee Int                 @default(0)
+  isLeader        Boolean             @default(false)
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
 
-  profile Profile? @relation(fields: [email], references: [email], onDelete: SetNull)
-  event   Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  team    Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  profile  Profile?   @relation(fields: [email], references: [email], onDelete: SetNull)
+  event    Event      @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  team     Team?      @relation(fields: [teamId], references: [id], onDelete: SetNull)
+  payments Payments[]
+  isPaid        Boolean       @default(false)
 
   @@unique([email, eventId])
   @@map("participants")
 }
 
-model Winner {
-  id        String   @id @default(cuid())
-  eventId   String
-  teamId    String
-  position  Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Relations
-  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  team  Team  @relation(fields: [teamId], references: [id], onDelete: Cascade)
-
-  @@map("winners")
-}
-
-model Announcement {
-  id          String           @id @default(cuid())
-  title       String
-  content     String
-  type        AnnouncementType @default(GENERAL)
-  eventId     String? // Null for global announcements
-  isPublished Boolean          @default(false)
-  isPinned    Boolean          @default(false)
-  readBy      String[]
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
-
-  // Relations
-  event Event? @relation(fields: [eventId], references: [id], onDelete: Cascade)
-
-  @@map("announcements")
+model Payments {
+  id            String        @id @default(cuid())
+  paymentId     String? // Payment reference
+  paymentMethod String? // UPI, Card, Cash, etc.
+  paidAt        DateTime?
+  status        PaymentStatus @default(PENDING)
+  teamId        String?
+  participantId String?
+  team          Team?         @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  participant   Participant?  @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }
 
 enum EventType {
   INDIVIDUAL
   TEAM
-  BOTH
 }
 
 enum ParticipationStatus {
@@ -156,10 +131,8 @@ enum ParticipationStatus {
   DISQUALIFIED
 }
 
-enum AnnouncementType {
-  GENERAL
-  URGENT
-  WINNER
-  SCHEDULE_UPDATE
-  REGISTRATION
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
 }

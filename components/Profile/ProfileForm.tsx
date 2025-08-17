@@ -76,6 +76,9 @@ export default function ProfileForm({
       year: profile?.year || "",
       graduationYear: profile?.graduationYear || "",
       dayScholar: profile?.dayScholar || false,
+      dateOfBirth: profile?.dateOfBirth
+        ? new Date(profile.dateOfBirth)
+        : undefined,
     },
   });
 
@@ -168,11 +171,8 @@ export default function ProfileForm({
                     <Calendar
                       mode="single"
                       selected={field.value}
+                      captionLayout="dropdown"
                       onSelect={field.onChange}
-                      disabled={(date) =>
-                        date > new Date() || date < new Date("1900-01-01")
-                      }
-                      initialFocus
                     />
                   </PopoverContent>
                 </Popover>

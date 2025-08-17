@@ -9,12 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import SignOutButton from "./SignOutButton";
-import {
-  Loader2Icon,
-  LockIcon,
-  LogInIcon,
-  UserRoundCogIcon,
-} from "lucide-react";
+import { Loader2Icon, LockIcon, UserRoundCogIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { SessionWithProfile } from "@/types/auth";
 import GoogleButton from "./GoogleButton";

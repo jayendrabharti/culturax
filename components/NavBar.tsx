@@ -10,8 +10,6 @@ import { Button } from "./ui/button";
 import Reveal from "./animations/Reveal";
 import Logo from "./Logo";
 import { NavBarLinks } from "@/utils/navLinks";
-import { useSession } from "next-auth/react";
-import { SessionWithProfile } from "@/types/auth";
 import UserButton from "./auth/UserButton";
 
 export default function NavBar() {
