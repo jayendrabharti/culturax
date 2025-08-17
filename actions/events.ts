@@ -2,7 +2,9 @@
 
 import { EventFormData } from "@/components/admin/events/EventForm";
 import prisma from "@/prisma/client";
+import { authOptions } from "@/utils/authOptions";
 import { getErrorMessage } from "@/utils/utils";
+import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
 
 // Type for cleaned data coming from client
@@ -75,6 +77,21 @@ export const deleteEvent = async (eventId: string) => {
     revalidatePath("/admin/events");
 
     return { data: null, errorMessage: null };
+  } catch (error) {
+    return { data: null, errorMessage: getErrorMessage(error) };
+  }
+};
+
+export const getUserParticipations = async () => {
+  try {
+    const session = await getServerSession(authOptions);
+
+    const participations = await prisma.participant.findMany({
+      where: { email: session?.user?.email },
+      include: { event: true, team: true },
+    });
+
+    return { data: participations, errorMessage: null };
   } catch (error) {
     return { data: null, errorMessage: getErrorMessage(error) };
   }

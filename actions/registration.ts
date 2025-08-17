@@ -317,6 +317,7 @@ export async function checkRegistrationStatus(
         isPaid,
         participant,
         team: participant.team,
+        isTeamLeader: participant.isLeader,
       },
       errorMessage: null,
     };
@@ -354,6 +355,57 @@ export async function checkEmailsAlreadyRegistered(
 
     return {
       data: existingParticipants,
+      errorMessage: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      errorMessage: getErrorMessage(error),
+    };
+  }
+}
+
+// Check if event has available slots
+export async function checkEventAvailability(eventId: string) {
+  try {
+    const event = await prisma.event.findUnique({
+      where: { id: eventId },
+      select: {
+        id: true,
+        registrationOpen: true,
+        maxTeams: true,
+        eventType: true,
+        _count: {
+          select: {
+            teams: true,
+            participants: true,
+          },
+        },
+      },
+    });
+
+    if (!event) {
+      return {
+        data: null,
+        errorMessage: "Event not found",
+      };
+    }
+
+    const isRegistrationClosed = !event.registrationOpen;
+    const isFull = event.maxTeams
+      ? event._count.teams >= event.maxTeams
+      : false;
+
+    return {
+      data: {
+        canRegister: !isRegistrationClosed && !isFull,
+        isRegistrationClosed,
+        isFull,
+        availableSlots: event.maxTeams
+          ? event.maxTeams - event._count.teams
+          : null,
+        totalSlots: event.maxTeams,
+      },
       errorMessage: null,
     };
   } catch (error) {

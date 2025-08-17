@@ -7,11 +7,14 @@ import { authOptions } from "@/utils/authOptions";
 import { getEventStatus } from "@/utils/events";
 import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
-import { checkRegistrationStatus } from "@/actions/registration";
+import {
+  checkRegistrationStatus,
+  checkEventAvailability,
+} from "@/actions/registration";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, CreditCard } from "lucide-react";
+import { CheckCircle, CreditCard, AlertTriangle, Users } from "lucide-react";
 
 export default async function RegisterEventsPage({
   params,
@@ -44,6 +47,10 @@ export default async function RegisterEventsPage({
 
   const registrationStatus = registrationStatusResult.data;
 
+  // Check event availability
+  const availabilityResult = await checkEventAvailability(eventId);
+  const eventAvailability = availabilityResult.data;
+
   return (
     <section className="flex w-full flex-col p-4 items-center">
       <RevealHero className="text-3xl mb-3">
@@ -60,73 +67,121 @@ export default async function RegisterEventsPage({
         </>
       )}
 
-      {eventStatusInfo.canRegister && registrationStatus && (
-        <>
-          {registrationStatus.isRegistered && registrationStatus.isPaid ? (
-            // Already registered and paid
-            <Card className="w-full max-w-md">
-              <CardHeader className="text-center">
-                <CardTitle className="flex items-center justify-center gap-2 text-green-600">
-                  <CheckCircle className="h-6 w-6" />
-                  Successfully Registered!
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="text-center space-y-4">
-                <p className="text-muted-foreground">
-                  You are successfully registered and have completed payment for
-                  this event.
-                </p>
-                {registrationStatus.team && (
-                  <p className="text-sm">
-                    <strong>Team:</strong> {registrationStatus.team.name}
-                  </p>
-                )}
-                <p className="text-sm">
-                  <strong>Registration Status:</strong> Confirmed
-                </p>
-              </CardContent>
-            </Card>
-          ) : registrationStatus.isRegistered && !registrationStatus.isPaid ? (
-            // Registered but not paid
-            <Card className="w-full max-w-md">
-              <CardHeader className="text-center">
-                <CardTitle className="flex items-center justify-center gap-2 text-orange-600">
-                  <CreditCard className="h-6 w-6" />
-                  Complete Payment
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="text-center space-y-4">
-                <p className="text-muted-foreground">
-                  You are registered for this event but need to complete
-                  payment.
-                </p>
-                {registrationStatus.team && (
-                  <p className="text-sm">
-                    <strong>Team:</strong> {registrationStatus.team.name}
-                  </p>
-                )}
-                <Button asChild className="w-full">
-                  <Link href={`/events/${eventId}/register/pay`}>
-                    Complete Payment
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-          ) : (
-            // Not registered - show registration forms
-            <>
-              {event.eventType === "TEAM" ? (
-                <TeamEventRegistration event={event} session={userSession} />
-              ) : (
-                <IndividualEventRegistration
-                  event={event}
-                  session={userSession}
-                />
-              )}
-            </>
-          )}
-        </>
+      {/* Event availability check */}
+      {eventAvailability && !eventAvailability.canRegister && (
+        <Card className="w-full max-w-md border-red-200 bg-red-50">
+          <CardHeader className="text-center">
+            <CardTitle className="flex items-center justify-center gap-2 text-red-600">
+              <AlertTriangle className="h-6 w-6" />
+              {eventAvailability.isRegistrationClosed
+                ? "Registration Closed"
+                : "Event Full"}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="text-center space-y-4">
+            <p className="text-muted-foreground">
+              {eventAvailability.isRegistrationClosed
+                ? "Registration for this event has been closed by the organizers."
+                : `All ${eventAvailability.totalSlots} slots have been filled for this event.`}
+            </p>
+            {eventAvailability.isFull && (
+              <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                <Users className="h-4 w-4" />
+                <span>
+                  {eventAvailability.totalSlots} /{" "}
+                  {eventAvailability.totalSlots} slots filled
+                </span>
+              </div>
+            )}
+          </CardContent>
+        </Card>
       )}
+
+      {eventStatusInfo.canRegister &&
+        registrationStatus &&
+        eventAvailability?.canRegister && (
+          <>
+            {registrationStatus.isRegistered && registrationStatus.isPaid ? (
+              // Already registered and paid
+              <Card className="w-full max-w-md">
+                <CardHeader className="text-center">
+                  <CardTitle className="flex items-center justify-center gap-2 text-green-600">
+                    <CheckCircle className="h-6 w-6" />
+                    Successfully Registered!
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-center space-y-4">
+                  <p className="text-muted-foreground">
+                    You are successfully registered and have completed payment
+                    for this event.
+                  </p>
+                  {registrationStatus.team && (
+                    <p className="text-sm">
+                      <strong>Team:</strong> {registrationStatus.team.name}
+                    </p>
+                  )}
+                  <p className="text-sm">
+                    <strong>Registration Status:</strong> Confirmed
+                  </p>
+                </CardContent>
+              </Card>
+            ) : registrationStatus.isRegistered &&
+              !registrationStatus.isPaid ? (
+              // Registered but not paid
+              <Card className="w-full max-w-md">
+                <CardHeader className="text-center">
+                  <CardTitle className="flex items-center justify-center gap-2 text-orange-600">
+                    <CreditCard className="h-6 w-6" />
+                    Complete Payment
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-center space-y-4">
+                  <p className="text-muted-foreground">
+                    You are registered for this event but need to complete
+                    payment.
+                  </p>
+                  {registrationStatus.team && (
+                    <p className="text-sm">
+                      <strong>Team:</strong> {registrationStatus.team.name}
+                    </p>
+                  )}
+
+                  {/* Team leader payment restriction */}
+                  {registrationStatus.team &&
+                  !registrationStatus.isTeamLeader ? (
+                    <div className="space-y-2">
+                      <p className="text-sm text-amber-600 font-medium">
+                        ⚠️ Ask team leader to complete payment
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Only the team leader can complete payment for the entire
+                        team.
+                      </p>
+                    </div>
+                  ) : (
+                    <Button asChild className="w-full">
+                      <Link href={`/events/${eventId}/register/pay`}>
+                        Complete Payment
+                      </Link>
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
+            ) : (
+              // Not registered - show registration forms
+              <>
+                {event.eventType === "TEAM" ? (
+                  <TeamEventRegistration event={event} session={userSession} />
+                ) : (
+                  <IndividualEventRegistration
+                    event={event}
+                    session={userSession}
+                  />
+                )}
+              </>
+            )}
+          </>
+        )}
 
       {eventStatusInfo.canRegister && !registrationStatus && (
         <div className="text-center text-red-600">

@@ -7,6 +7,7 @@ import {
   CheckCheckIcon,
   CircleDollarSignIcon,
   LayoutDashboardIcon,
+  AlertTriangle,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -67,6 +68,7 @@ export default async function PaymentPage({ params }: PaymentPageProps) {
       );
     }
   } else {
+    // Team event - check if user is team leader
     if (participant.team?.isPaid) {
       return (
         <div className="flex flex-col h-full w-full justify-center items-center gap-5">
@@ -78,6 +80,33 @@ export default async function PaymentPage({ params }: PaymentPageProps) {
             <Button variant={"outline"}>
               <LayoutDashboardIcon />
               Go to Dashboard
+            </Button>
+          </Link>
+        </div>
+      );
+    }
+
+    // Check if user is team leader for payment
+    if (!participant.isLeader) {
+      return (
+        <div className="flex flex-col h-full w-full justify-center items-center gap-5 p-8">
+          <AlertTriangle className="size-16 text-amber-500" />
+          <span className="text-amber-600 text-2xl font-bold text-center">
+            Only Team Leader Can Complete Payment
+          </span>
+          <div className="text-center space-y-2">
+            <p className="text-muted-foreground">
+              Please ask your team leader to complete the payment for the entire
+              team.
+            </p>
+            <p className="text-sm text-muted-foreground">
+              <strong>Team:</strong> {participant.team?.name}
+            </p>
+          </div>
+          <Link href={`/events/${event.id}`}>
+            <Button variant={"outline"}>
+              <LayoutDashboardIcon />
+              Go Back to Event
             </Button>
           </Link>
         </div>
