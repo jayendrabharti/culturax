@@ -27,9 +27,15 @@ export const NavBarLinks: NavBarLinkType[] = [
   { name: "Contact Us", href: "/contact", icon: FaEnvelope, showInNav: false },
   { name: "About Us", href: "/aboutus", icon: InfoIcon, showInNav: false },
   {
-    name: "T&C",
+    name: "Terms and conditions",
     href: "/terms-and-conditions",
     icon: InfoIcon,
-    showInNav: true,
+    showInNav: false,
+  },
+  {
+    name: "Privacy Policy",
+    href: "/privacy-policy",
+    icon: InfoIcon,
+    showInNav: false,
   },
 ];
