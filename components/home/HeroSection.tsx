@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import Reveal from "../animations/Reveal";
 import { RainbowButton } from "../magicui/rainbow-button";
-import { ArrowRightIcon, PhoneIcon } from "lucide-react";
+import { ArrowRightIcon, PhoneIcon, ScrollTextIcon } from "lucide-react";
 import Image from "next/image";
 import { useTheme } from "next-themes";
 import HeroImages from "./HeroImages";
@@ -163,6 +163,12 @@ export default function HeroSection() {
                 <Button variant={"outline"}>
                   Contact Us
                   <PhoneIcon />
+                </Button>
+              </Link>
+              <Link href={"/terms-and-conditions"}>
+                <Button variant={"outline"}>
+                  Terms and Conditions
+                  <ScrollTextIcon />
                 </Button>
               </Link>
             </div>

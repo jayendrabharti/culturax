@@ -1,6 +1,7 @@
 import HeroSection from "@/components/home/HeroSection";
 import EventsSection from "@/components/home/EventsSection";
 import { prisma } from "@/prisma/client";
+import AboutUsPage from "./aboutus/page";
 
 export default async function Home() {
   // Fetch events for the events section
@@ -14,6 +15,7 @@ export default async function Home() {
   return (
     <>
       <HeroSection />
+      <AboutUsPage />
       <EventsSection events={events} />
     </>
   );

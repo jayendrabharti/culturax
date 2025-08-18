@@ -1,10 +1,9 @@
-import { LayoutDashboardIcon } from "lucide-react";
+import { InfoIcon, LayoutDashboardIcon } from "lucide-react";
 import {
   FaHome,
   FaCalendarAlt,
   FaRegListAlt,
   FaEnvelope,
-  FaUserPlus,
 } from "react-icons/fa";
 
 export interface NavBarLinkType {
@@ -26,4 +25,11 @@ export const NavBarLinks: NavBarLinkType[] = [
     showInNav: true,
   },
   { name: "Contact Us", href: "/contact", icon: FaEnvelope, showInNav: false },
+  { name: "About Us", href: "/aboutus", icon: InfoIcon, showInNav: false },
+  {
+    name: "T&C",
+    href: "/terms-and-conditions",
+    icon: InfoIcon,
+    showInNav: true,
+  },
 ];
