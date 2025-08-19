@@ -153,7 +153,7 @@ export default function HeroSection() {
 
           <Reveal delay={0.5}>
             <div className="flex flex-row flex-wrap justify-center gap-4">
-              <Link href={"/register"}>
+              <Link href={"/events"}>
                 <Button>
                   Registration opening soon!
                   <ArrowRightIcon />

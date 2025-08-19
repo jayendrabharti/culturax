@@ -28,7 +28,7 @@ export default function AdminHeader({
         {appName.toUpperCase()}
       </Link>
 
-      <AdminSideBarExpandToggle />
+      <AdminSideBarExpandToggle className="hidden md:flex" />
 
       <Separator orientation={"vertical"} />
 
