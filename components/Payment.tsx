@@ -5,12 +5,12 @@ import { Button } from "./ui/button";
 import { CircleDollarSignIcon, Loader2Icon } from "lucide-react";
 import { useState } from "react";
 import { Event, Participant, Team } from "@prisma/client";
-import { createOrder, logSuccessfullPayment } from "@/actions/payment";
+import { createOrder, verifyPayment } from "@/actions/payment";
 import { toast } from "sonner";
 
 declare global {
   interface Window {
-    Razorpay: any;
+    Cashfree: any;
   }
 }
 
@@ -29,42 +29,52 @@ export default function Payment({
     try {
       setIsProcessing(true);
 
-      const { data, errorMessage } = await createOrder(event.registrationFee);
+      const { data, errorMessage } = await createOrder({
+        amount: event.registrationFee,
+        customer_details: {
+          customer_id: participant.id,
+          customer_email: participant.email || "customer@example.com",
+          customer_phone: participant.phone || "9999999999",
+          customer_name: participant.name,
+        },
+      });
 
-      if (errorMessage || !data?.orderId) {
+      if (errorMessage || !data?.payment_session_id || !data?.order_id) {
         toast.error(errorMessage ?? "Failed to create order");
         return;
       }
 
-      const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-        amount: event.registrationFee * 100,
-        currency: "INR",
-        order_id: data.orderId,
-        name: "Cultrax Fest",
-        description: "Event Registration",
-        image: "/images/fest_black_logo.png",
-        handler: async (response: any) => {
-          await logSuccessfullPayment({
-            eventId: event.id,
-            participantId: participant.id,
-            paymentId: response.razorpay_payment_id,
-          });
-          toast.success("Payment successful!");
-        },
-        prefill: {
-          name: participant.name ?? "",
-          email: participant.email ?? "",
-          contact: participant.phone ?? "",
-        },
-        notes: {
-          eventId: "event_id",
-          eventName: event.name,
-        },
-      };
+      const orderId = data.order_id;
+      const paymentSessionId = data.payment_session_id;
 
-      const razorpay = new window.Razorpay(options);
-      razorpay.open();
+      const cashfree = new window.Cashfree({
+        mode: process.env.NEXT_PUBLIC_CASHFREE_MODE || "sandbox",
+      });
+      const checkoutOptions = {
+        paymentSessionId: paymentSessionId,
+        redirectTarget: "_modal",
+      };
+      cashfree.checkout(checkoutOptions).then(async function (result: any) {
+        if (result.error) {
+          toast.error(result.error.message);
+        }
+        if (result.redirect) {
+          console.log("Redirection");
+        }
+        const { data, errorMessage } = await verifyPayment({
+          orderId: orderId,
+          eventId: event.id,
+          participantId: participant.id,
+        });
+
+        if (data?.success) {
+          toast.success("Payment successful!", {
+            description: "Payment has been verified",
+          });
+        } else if (errorMessage) {
+          toast.error(errorMessage);
+        }
+      });
     } catch (error) {
       console.error("Payment error:", error);
     } finally {
@@ -74,7 +84,7 @@ export default function Payment({
 
   return (
     <>
-      <Script src="https://checkout.razorpay.com/v1/checkout.js" />
+      <Script src="https://sdk.cashfree.com/js/v3/cashfree.js" />
       <Button
         className={`${className}`}
         disabled={isProcessing}
