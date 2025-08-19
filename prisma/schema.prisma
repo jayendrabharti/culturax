@@ -54,6 +54,9 @@ model Event {
   teams         Team[]
   participants  Participant[]
 
+  @@index([registrationOpen])
+  @@index([eventType])
+  @@index([registrationEndsAt])
   @@map("events")
 }
 
@@ -77,6 +80,8 @@ model Team {
   isPaid        Boolean       @default(false)
 
   @@unique([name, eventId]) // Team name must be unique per event
+  @@index([eventId])
+  @@index([leaderEmail])
   @@map("teams")
 }
 
@@ -102,6 +107,10 @@ model Participant {
   isPaid        Boolean       @default(false)
 
   @@unique([email, eventId])
+  @@index([eventId])
+  @@index([email])
+  @@index([teamId])
+  @@index([eventId, email])
   @@map("participants")
 }
 
@@ -117,6 +126,10 @@ model Payments {
   participant   Participant?  @relation(fields: [participantId], references: [id], onDelete: Cascade)
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
+
+  @@index([teamId])
+  @@index([participantId])
+  @@index([status])
 }
 
 enum EventType {

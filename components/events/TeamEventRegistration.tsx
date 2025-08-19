@@ -20,6 +20,7 @@ import {
   registerForTeamEvent,
   TeamRegistrationData,
   checkEmailsAlreadyRegistered,
+  getEventDetails,
 } from "@/actions/registration";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -30,7 +31,7 @@ import { PlusIcon, Trash2Icon } from "lucide-react";
 const participantSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
-  phone: z.string().optional(),
+  phone: z.string().min(10, "Phone number must be at least 10 digits"),
   year: z.string().optional(),
   course: z.string().optional(),
 });
@@ -144,8 +145,17 @@ export function TeamEventRegistration({
         );
         return;
       }
+      const eventDetails = await getEventDetails(event.id);
+      if (!eventDetails) {
+        toast.error("Event not found");
+        return;
+      }
 
-      const result = await registerForTeamEvent(event.id, data, leaderEmail);
+      const result = await registerForTeamEvent(
+        eventDetails,
+        data,
+        leaderEmail
+      );
 
       if (result.errorMessage) {
         toast.error(result.errorMessage);

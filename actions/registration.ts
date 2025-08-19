@@ -8,7 +8,7 @@ import { getErrorMessage } from "@/utils/utils";
 export type ParticipantData = {
   name: string;
   email: string;
-  phone?: string;
+  phone: string;
   year?: string;
   course?: string;
 };
@@ -20,6 +20,21 @@ export type TeamRegistrationData = {
 };
 
 export type IndividualRegistrationData = ParticipantData;
+
+interface EventDetails {
+  name: string;
+  id: string;
+  registrationFee: number;
+  _count: {
+    teams: number;
+  };
+  eventType: "INDIVIDUAL" | "TEAM";
+  minParticipantsPerTeam: number | null;
+  maxParticipantsPerTeam: number | null;
+  maxTeams: number | null;
+  registrationEndsAt: Date;
+  registrationOpen: boolean;
+}
 
 // Individual event registration
 export async function registerForIndividualEvent(
@@ -105,30 +120,11 @@ export async function registerForIndividualEvent(
 
 // Team event registration
 export async function registerForTeamEvent(
-  eventId: string,
+  event: EventDetails,
   data: TeamRegistrationData,
   leaderEmail: string
 ) {
   try {
-    // Get event details for validation
-    const event = await prisma.event.findUnique({
-      where: { id: eventId },
-      select: {
-        id: true,
-        name: true,
-        eventType: true,
-        registrationOpen: true,
-        registrationEndsAt: true,
-        registrationFee: true,
-        minParticipantsPerTeam: true,
-        maxParticipantsPerTeam: true,
-        maxTeams: true,
-        _count: {
-          select: { teams: true },
-        },
-      },
-    });
-
     if (!event) {
       return { data: null, errorMessage: "Event not found" };
     }
@@ -183,7 +179,7 @@ export async function registerForTeamEvent(
       where: {
         name_eventId: {
           name: data.teamName,
-          eventId: eventId,
+          eventId: event.id,
         },
       },
     });
@@ -199,7 +195,7 @@ export async function registerForTeamEvent(
     const participantEmails = data.participants.map((p) => p.email);
     const existingParticipants = await prisma.participant.findMany({
       where: {
-        eventId: eventId,
+        eventId: event.id,
         email: {
           in: participantEmails,
         },
@@ -233,35 +229,30 @@ export async function registerForTeamEvent(
         data: {
           name: data.teamName,
           description: data.teamDescription,
-          eventId: eventId,
+          eventId: event.id,
           leaderEmail: leaderEmail,
           registrationFee: event.registrationFee * participantCount,
         },
       });
 
-      // Create participants
-      const participants = await Promise.all(
-        data.participants.map((participant) =>
-          tx.participant.create({
-            data: {
-              name: participant.name,
-              email: participant.email,
-              phone: participant.phone,
-              year: participant.year,
-              course: participant.course,
-              eventId: eventId,
-              teamId: team.id,
-              registrationFee: event.registrationFee,
-              isLeader: participant.email === leaderEmail,
-            },
-          })
-        )
-      );
+      const participants = await tx.participant.createMany({
+        data: data.participants.map((participant) => ({
+          name: participant.name,
+          email: participant.email,
+          phone: participant.phone,
+          year: participant.year,
+          course: participant.course,
+          eventId: event.id,
+          teamId: team.id,
+          registrationFee: event.registrationFee,
+          isLeader: participant.email === leaderEmail,
+        })),
+      });
 
       return { team, participants };
     });
 
-    revalidatePath(`/events/${eventId}`);
+    revalidatePath(`/events/${event.id}`);
     return { data: result, errorMessage: null };
   } catch (error: any) {
     if (error.code === "P2002") {
@@ -413,5 +404,34 @@ export async function checkEventAvailability(eventId: string) {
       data: null,
       errorMessage: getErrorMessage(error),
     };
+  }
+}
+
+export async function getEventDetails(
+  eventId: string
+): Promise<EventDetails | null> {
+  try {
+    const event = await prisma.event.findUnique({
+      where: { id: eventId },
+      select: {
+        name: true,
+        id: true,
+        registrationFee: true,
+        _count: {
+          select: { teams: true },
+        },
+        eventType: true,
+        minParticipantsPerTeam: true,
+        maxParticipantsPerTeam: true,
+        maxTeams: true,
+        registrationEndsAt: true,
+        registrationOpen: true,
+      },
+    });
+
+    return event;
+  } catch (error) {
+    console.error("Error fetching event details:", getErrorMessage(error));
+    return null;
   }
 }
