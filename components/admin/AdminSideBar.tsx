@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import React from "react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { LuMessageSquareText, LuLayoutDashboard, LuUser } from "react-icons/lu";
+import { LuLayoutDashboard, LuUser } from "react-icons/lu";
 import { FaCalendarAlt } from "react-icons/fa";
 import { useData } from "@/providers/DataProvider";
 
@@ -30,11 +30,6 @@ export const navItems: NavItem[] = [
     title: "Events",
     href: "/admin/events",
     icon: FaCalendarAlt,
-  },
-  {
-    title: "Contact Us",
-    href: "/admin/contact",
-    icon: LuMessageSquareText,
   },
 ];
 

@@ -116,14 +116,15 @@ model Participant {
 
 model Payments {
   id            String        @id @default(cuid())
+  amount        Int
   paymentId     String? // Payment reference
   paymentMethod String? // UPI, Card, Cash, etc.
   paidAt        DateTime?
   status        PaymentStatus @default(PENDING)
   teamId        String?
   participantId String?
-  team          Team?         @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  participant   Participant?  @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  team          Team?         @relation(fields: [teamId], references: [id], onDelete: SetNull)
+  participant   Participant?  @relation(fields: [participantId], references: [id], onDelete: SetNull)
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
 

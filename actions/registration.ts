@@ -102,9 +102,11 @@ export async function registerForIndividualEvent(
         eventId: eventId,
         registrationFee: event.registrationFee,
         isLeader: true, // Individual participants are considered leaders
+        isPaid: event.registrationFee === 0,
       },
     });
 
+    revalidatePath(`/events/${eventId}/register`);
     revalidatePath(`/events/${eventId}`);
     return { data: participant, errorMessage: null };
   } catch (error: any) {
@@ -232,6 +234,7 @@ export async function registerForTeamEvent(
           eventId: event.id,
           leaderEmail: leaderEmail,
           registrationFee: event.registrationFee * participantCount,
+          isPaid: event.registrationFee === 0, // Mark as paid if fee is 0
         },
       });
 
@@ -246,12 +249,14 @@ export async function registerForTeamEvent(
           teamId: team.id,
           registrationFee: event.registrationFee,
           isLeader: participant.email === leaderEmail,
+          isPaid: event.registrationFee === 0, // Mark as paid if fee is 0
         })),
       });
 
       return { team, participants };
     });
 
+    revalidatePath(`/events/${event.id}/register`);
     revalidatePath(`/events/${event.id}`);
     return { data: result, errorMessage: null };
   } catch (error: any) {

@@ -40,16 +40,13 @@ export default async function RegisterEventsPage({
   const eventStatusInfo = getEventStatus(event);
 
   // Check if user is already registered
-  const registrationStatusResult = await checkRegistrationStatus(
+  const { data: registrationStatus } = await checkRegistrationStatus(
     eventId,
     userSession.user.profile.email
   );
 
-  const registrationStatus = registrationStatusResult.data;
-
   // Check event availability
-  const availabilityResult = await checkEventAvailability(eventId);
-  const eventAvailability = availabilityResult.data;
+  const { data: eventAvailability } = await checkEventAvailability(eventId);
 
   return (
     <section className="flex w-full flex-col p-4 items-center">

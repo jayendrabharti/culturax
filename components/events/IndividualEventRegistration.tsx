@@ -86,7 +86,9 @@ export function IndividualEventRegistration({
         toast.error(result.errorMessage);
       } else {
         toast.success("Registration successful!");
-        router.push(`/events/${event.id}/register/pay`);
+        if (event.registrationFee > 0) {
+          router.push(`/events/${event.id}/register/pay`);
+        }
       }
     } catch (error) {
       console.error("Registration error:", error);

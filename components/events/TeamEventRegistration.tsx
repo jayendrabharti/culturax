@@ -161,7 +161,9 @@ export function TeamEventRegistration({
         toast.error(result.errorMessage);
       } else {
         toast.success("Team registration successful!");
-        router.push(`/events/${event.id}/register/pay`);
+        if (event.registrationFee > 0) {
+          router.push(`/events/${event.id}/register/pay`);
+        }
       }
     } catch (error) {
       console.error("Registration error:", error);

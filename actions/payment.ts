@@ -166,10 +166,15 @@ export const logSuccessfullPayment = async ({
       return [event, participant];
     });
 
+    if (!event || !participant) {
+      throw new Error("Event or participant not found");
+    }
+
     if (event?.eventType === "TEAM") {
       await prisma.$transaction(async (tx) => {
         await tx.payments.create({
           data: {
+            amount: event.registrationFee,
             paymentId: paymentId,
             paymentMethod: paymentMethod,
             paidAt: paidAt,
@@ -186,6 +191,7 @@ export const logSuccessfullPayment = async ({
       await prisma.$transaction(async (tx) => {
         await tx.payments.create({
           data: {
+            amount: event.registrationFee,
             paymentId: paymentId,
             paymentMethod: "CASHFREE",
             paidAt: new Date(),

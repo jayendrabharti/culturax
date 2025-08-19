@@ -4,6 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -37,9 +38,11 @@ import RichTextEditor from "@/components/RichTextEditor";
 import { createEvent, updateEvent } from "@/actions/events";
 import { useRouter } from "next/navigation";
 import { Event } from "@prisma/client";
+import { Switch } from "@/components/ui/switch";
 
 const eventSchema = z
   .object({
+    registrationOpen: z.boolean(),
     name: z.string().min(2, "Event name must be at least 2 characters"),
     description: z
       .string()
@@ -86,6 +89,7 @@ export default function EventForm({
   const form = useForm<EventFormData>({
     resolver: zodResolver(eventSchema),
     defaultValues: {
+      registrationOpen: event?.registrationOpen || true,
       name: event?.name || "",
       description: event?.description || "",
       location: event?.location || "",
@@ -187,7 +191,26 @@ export default function EventForm({
           disabled={saving}
         />
 
-        <Separator />
+        <FormField
+          control={form.control}
+          name={"registrationOpen"}
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+              <div className="space-y-0.5">
+                <FormLabel>Registration Open</FormLabel>
+                <FormDescription>
+                  Allow participants to register for this event.
+                </FormDescription>
+              </div>
+              <FormControl>
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
 
         {/* Basic Information */}
         <div className="space-y-4">
@@ -407,178 +430,6 @@ export default function EventForm({
             <div className="flex flex-row flex-wrap gap-10">
               <FormField
                 control={form.control}
-                name="startsAt"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Event Start Time *</FormLabel>
-                    <div className="flex gap-4">
-                      {/* Date Picker */}
-                      <div className="flex flex-col gap-3">
-                        <Label htmlFor="startsAt-date" className="px-1">
-                          Date
-                        </Label>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button
-                              variant="outline"
-                              id="startsAt-date"
-                              className="w-32 justify-between font-normal"
-                            >
-                              {field.value
-                                ? field.value.toLocaleDateString()
-                                : "Select date"}
-                              <ChevronDownIcon />
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent
-                            className="w-auto overflow-hidden p-0"
-                            align="start"
-                          >
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              captionLayout="dropdown"
-                              onSelect={(date) => {
-                                if (date) {
-                                  // preserve time if already set
-                                  const prev = field.value ?? new Date();
-                                  date.setHours(
-                                    prev.getHours(),
-                                    prev.getMinutes(),
-                                    prev.getSeconds()
-                                  );
-                                  field.onChange(date);
-                                }
-                              }}
-                            />
-                          </PopoverContent>
-                        </Popover>
-                      </div>
-                      {/* Time Picker */}
-                      <div className="flex flex-col gap-3">
-                        <Label htmlFor="startsAt-time" className="px-1">
-                          Time
-                        </Label>
-                        <Input
-                          type="time"
-                          id="startsAt-time"
-                          step="1"
-                          value={
-                            field.value
-                              ? field.value.toLocaleTimeString("en-GB", {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                  second: "2-digit",
-                                })
-                              : "10:30:00"
-                          }
-                          onChange={(e) => {
-                            const [h, m, s] = e.target.value
-                              .split(":")
-                              .map(Number);
-                            const date = field.value
-                              ? new Date(field.value)
-                              : new Date();
-                            date.setHours(h, m, s ?? 0);
-                            field.onChange(date);
-                          }}
-                          className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
-                        />
-                      </div>
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="endsAt"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Event End Time *</FormLabel>
-                    <div className="flex gap-4">
-                      {/* Date Picker */}
-                      <div className="flex flex-col gap-3">
-                        <Label htmlFor="endsAt-date" className="px-1">
-                          Date
-                        </Label>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button
-                              variant="outline"
-                              id="endsAt-date"
-                              className="w-32 justify-between font-normal"
-                            >
-                              {field.value
-                                ? field.value.toLocaleDateString()
-                                : "Select date"}
-                              <ChevronDownIcon />
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent
-                            className="w-auto overflow-hidden p-0"
-                            align="start"
-                          >
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              captionLayout="dropdown"
-                              onSelect={(date) => {
-                                if (date) {
-                                  const prev = field.value ?? new Date();
-                                  date.setHours(
-                                    prev.getHours(),
-                                    prev.getMinutes(),
-                                    prev.getSeconds()
-                                  );
-                                  field.onChange(date);
-                                }
-                              }}
-                            />
-                          </PopoverContent>
-                        </Popover>
-                      </div>
-                      {/* Time Picker */}
-                      <div className="flex flex-col gap-3">
-                        <Label htmlFor="endsAt-time" className="px-1">
-                          Time
-                        </Label>
-                        <Input
-                          type="time"
-                          id="endsAt-time"
-                          step="1"
-                          value={
-                            field.value
-                              ? field.value.toLocaleTimeString("en-GB", {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                  second: "2-digit",
-                                })
-                              : "10:30:00"
-                          }
-                          onChange={(e) => {
-                            const [h, m, s] = e.target.value
-                              .split(":")
-                              .map(Number);
-                            const date = field.value
-                              ? new Date(field.value)
-                              : new Date();
-                            date.setHours(h, m, s ?? 0);
-                            field.onChange(date);
-                          }}
-                          className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
-                        />
-                      </div>
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="flex flex-row flex-wrap gap-10">
-              <FormField
-                control={form.control}
                 name="registrationStartsAt"
                 render={({ field }) => (
                   <FormItem>
@@ -730,6 +581,178 @@ export default function EventForm({
                         <Input
                           type="time"
                           id="registrationEndsAt-time"
+                          step="1"
+                          value={
+                            field.value
+                              ? field.value.toLocaleTimeString("en-GB", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                  second: "2-digit",
+                                })
+                              : "10:30:00"
+                          }
+                          onChange={(e) => {
+                            const [h, m, s] = e.target.value
+                              .split(":")
+                              .map(Number);
+                            const date = field.value
+                              ? new Date(field.value)
+                              : new Date();
+                            date.setHours(h, m, s ?? 0);
+                            field.onChange(date);
+                          }}
+                          className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                        />
+                      </div>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="flex flex-row flex-wrap gap-10">
+              <FormField
+                control={form.control}
+                name="startsAt"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Event Start Time *</FormLabel>
+                    <div className="flex gap-4">
+                      {/* Date Picker */}
+                      <div className="flex flex-col gap-3">
+                        <Label htmlFor="startsAt-date" className="px-1">
+                          Date
+                        </Label>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              id="startsAt-date"
+                              className="w-32 justify-between font-normal"
+                            >
+                              {field.value
+                                ? field.value.toLocaleDateString()
+                                : "Select date"}
+                              <ChevronDownIcon />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent
+                            className="w-auto overflow-hidden p-0"
+                            align="start"
+                          >
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              captionLayout="dropdown"
+                              onSelect={(date) => {
+                                if (date) {
+                                  // preserve time if already set
+                                  const prev = field.value ?? new Date();
+                                  date.setHours(
+                                    prev.getHours(),
+                                    prev.getMinutes(),
+                                    prev.getSeconds()
+                                  );
+                                  field.onChange(date);
+                                }
+                              }}
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+                      {/* Time Picker */}
+                      <div className="flex flex-col gap-3">
+                        <Label htmlFor="startsAt-time" className="px-1">
+                          Time
+                        </Label>
+                        <Input
+                          type="time"
+                          id="startsAt-time"
+                          step="1"
+                          value={
+                            field.value
+                              ? field.value.toLocaleTimeString("en-GB", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                  second: "2-digit",
+                                })
+                              : "10:30:00"
+                          }
+                          onChange={(e) => {
+                            const [h, m, s] = e.target.value
+                              .split(":")
+                              .map(Number);
+                            const date = field.value
+                              ? new Date(field.value)
+                              : new Date();
+                            date.setHours(h, m, s ?? 0);
+                            field.onChange(date);
+                          }}
+                          className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                        />
+                      </div>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="endsAt"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Event End Time *</FormLabel>
+                    <div className="flex gap-4">
+                      {/* Date Picker */}
+                      <div className="flex flex-col gap-3">
+                        <Label htmlFor="endsAt-date" className="px-1">
+                          Date
+                        </Label>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              id="endsAt-date"
+                              className="w-32 justify-between font-normal"
+                            >
+                              {field.value
+                                ? field.value.toLocaleDateString()
+                                : "Select date"}
+                              <ChevronDownIcon />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent
+                            className="w-auto overflow-hidden p-0"
+                            align="start"
+                          >
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              captionLayout="dropdown"
+                              onSelect={(date) => {
+                                if (date) {
+                                  const prev = field.value ?? new Date();
+                                  date.setHours(
+                                    prev.getHours(),
+                                    prev.getMinutes(),
+                                    prev.getSeconds()
+                                  );
+                                  field.onChange(date);
+                                }
+                              }}
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+                      {/* Time Picker */}
+                      <div className="flex flex-col gap-3">
+                        <Label htmlFor="endsAt-time" className="px-1">
+                          Time
+                        </Label>
+                        <Input
+                          type="time"
+                          id="endsAt-time"
                           step="1"
                           value={
                             field.value
