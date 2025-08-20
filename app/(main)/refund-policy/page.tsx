@@ -1,18 +1,9 @@
-"use client";
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import {
-  AlertTriangle,
-  Clock,
-  CreditCard,
-  Package,
-  Phone,
-  Mail,
-} from "lucide-react";
+import { AlertTriangle, Clock, CreditCard, Phone, Mail } from "lucide-react";
 
-export default function RefundPolicyPage() {
+export default async function RefundPolicyPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <div className="text-center mb-8">
