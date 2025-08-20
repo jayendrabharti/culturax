@@ -60,29 +60,7 @@ export default function NavBar() {
           )}
         >
           {NavBarLinks.map((link, index) => {
-            if (!link.showInNav) return null;
-
             const active = isActive(link.href);
-
-            if (link.special) {
-              return (
-                <Link
-                  href={link.href}
-                  key={index}
-                  onClick={() => setExpanded(false)}
-                  className="md:ml-0 ml-auto md:w-auto w-full"
-                >
-                  <Button
-                    variant={active ? "default" : "outline"}
-                    className="w-full rounded-full"
-                  >
-                    <link.icon />
-
-                    {link.name}
-                  </Button>
-                </Link>
-              );
-            }
 
             return (
               <Link

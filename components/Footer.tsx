@@ -1,13 +1,13 @@
 import { BsGithub } from "react-icons/bs";
 import Link from "next/link";
 import Logo from "./Logo";
-import { NavBarLinks } from "@/utils/navLinks";
+import { PolicyLinks, QuickLinks } from "@/utils/navLinks";
 
 export default async function Footer() {
   return (
     <footer className="mx-auto mt-20 w-full p-4 max-w-4xl">
       <div className="border-border border-t p-10">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 sm:place-items-center">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 sm:place-items-center">
           {/* Brand Section */}
           <div className="md:col-span-1">
             <Logo size={"lg"} />
@@ -17,10 +17,29 @@ export default async function Footer() {
           <div>
             <h3 className="mb-4 font-semibold">Quick Links</h3>
             <ul className="space-y-2">
-              {NavBarLinks.map((link, index) => (
+              {QuickLinks.map((link, index) => (
                 <li key={index}>
                   <Link
                     href={link.href}
+                    target="_blank"
+                    className="text-muted-foreground hover:text-primary flex items-center gap-2 text-sm transition-colors"
+                  >
+                    <link.icon size={16} />
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          {/* Quick Links */}
+          <div>
+            <h3 className="mb-4 font-semibold">Policies</h3>
+            <ul className="space-y-2">
+              {PolicyLinks.map((link, index) => (
+                <li key={index}>
+                  <Link
+                    href={link.href}
+                    target="_blank"
                     className="text-muted-foreground hover:text-primary flex items-center gap-2 text-sm transition-colors"
                   >
                     <link.icon size={16} />
