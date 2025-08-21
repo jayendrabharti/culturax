@@ -388,18 +388,33 @@ export async function checkEventAvailability(eventId: string) {
     }
 
     const isRegistrationClosed = !event.registrationOpen;
-    const isFull = event.maxTeams
-      ? event._count.teams >= event.maxTeams
-      : false;
+
+    const isFull = (function () {
+      if (event.eventType === "INDIVIDUAL") {
+        return event.maxTeams
+          ? event._count.participants >= event.maxTeams
+          : false;
+      } else {
+        return event.maxTeams ? event._count.teams >= event.maxTeams : false;
+      }
+    })();
+
+    const availableSlots = (function () {
+      if (event.eventType === "INDIVIDUAL") {
+        return event.maxTeams
+          ? event.maxTeams - event._count.participants
+          : null;
+      } else {
+        return event.maxTeams ? event.maxTeams - event._count.teams : null;
+      }
+    })();
 
     return {
       data: {
         canRegister: !isRegistrationClosed && !isFull,
         isRegistrationClosed,
         isFull,
-        availableSlots: event.maxTeams
-          ? event.maxTeams - event._count.teams
-          : null,
+        availableSlots,
         totalSlots: event.maxTeams,
       },
       errorMessage: null,

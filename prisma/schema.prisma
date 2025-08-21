@@ -51,8 +51,8 @@ model Event {
   createdAt              DateTime  @default(now())
   updatedAt              DateTime  @updatedAt
 
-  teams         Team[]
-  participants  Participant[]
+  teams        Team[]
+  participants Participant[]
 
   @@index([registrationOpen])
   @@index([eventType])
@@ -76,8 +76,8 @@ model Team {
   event        Event         @relation(fields: [eventId], references: [id], onDelete: Cascade)
   participants Participant[]
   payments     Payments[]
-  
-  isPaid        Boolean       @default(false)
+
+  isPaid Boolean @default(false)
 
   @@unique([name, eventId]) // Team name must be unique per event
   @@index([eventId])
@@ -104,7 +104,7 @@ model Participant {
   event    Event      @relation(fields: [eventId], references: [id], onDelete: Cascade)
   team     Team?      @relation(fields: [teamId], references: [id], onDelete: SetNull)
   payments Payments[]
-  isPaid        Boolean       @default(false)
+  isPaid   Boolean    @default(false)
 
   @@unique([email, eventId])
   @@index([eventId])
@@ -119,8 +119,10 @@ model Payments {
   amount        Int
   paymentId     String? // Payment reference
   paymentMethod String? // UPI, Card, Cash, etc.
+  transactionId String? // Transaction ID for tracking
+  imageUrl      String? // Transaction image for proof
   paidAt        DateTime?
-  status        PaymentStatus @default(PENDING)
+  status        PaymentStatus @default(UNVERIFIED)
   teamId        String?
   participantId String?
   team          Team?         @relation(fields: [teamId], references: [id], onDelete: SetNull)
@@ -146,7 +148,7 @@ enum ParticipationStatus {
 }
 
 enum PaymentStatus {
-  PENDING
+  UNVERIFIED
   COMPLETED
   FAILED
 }

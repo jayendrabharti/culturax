@@ -7,6 +7,7 @@ import Link from "next/link";
 import { LuLayoutDashboard, LuUser } from "react-icons/lu";
 import { FaCalendarAlt } from "react-icons/fa";
 import { useData } from "@/providers/DataProvider";
+import { DollarSignIcon } from "lucide-react";
 
 interface NavItem {
   title: string;
@@ -30,6 +31,11 @@ export const navItems: NavItem[] = [
     title: "Events",
     href: "/admin/events",
     icon: FaCalendarAlt,
+  },
+  {
+    title: "Payments",
+    href: "/admin/payments",
+    icon: DollarSignIcon,
   },
 ];
 

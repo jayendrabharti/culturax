@@ -79,7 +79,7 @@ export default function RichTextEditor({
         q.enable();
       }
     },
-    [readOnly, content]
+    [readOnly]
   );
 
   return <div ref={containerRef}></div>;

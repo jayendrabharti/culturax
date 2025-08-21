@@ -147,7 +147,7 @@ export default async function PaymentPage({ params }: PaymentPageProps) {
             </span>
           </div>
         </div>
-        <Payment className="w-full" event={event} participant={participant} />
+        <Payment event={event} participant={participant} />
       </div>
     </section>
   );

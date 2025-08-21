@@ -53,6 +53,8 @@ export default async function AdminPage() {
       title: "Money Collected",
       value: `₹ ${moneyCollected?._sum?.amount ?? 0}`,
       icon: <DollarSignIcon />,
+      link: "/admin/payments",
+      linkLabel: "View all payments",
     },
   ];
 
