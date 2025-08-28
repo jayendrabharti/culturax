@@ -1,10 +1,5 @@
-import { InfoIcon, LayoutDashboardIcon } from "lucide-react";
-import {
-  FaHome,
-  FaCalendarAlt,
-  FaRegListAlt,
-  FaEnvelope,
-} from "react-icons/fa";
+import { InfoIcon } from "lucide-react";
+import { FaHome, FaCalendarAlt, FaEnvelope } from "react-icons/fa";
 
 export interface NavBarLinkType {
   name: string;
@@ -15,18 +10,10 @@ export interface NavBarLinkType {
 export const NavBarLinks: NavBarLinkType[] = [
   { name: "Home", href: "/", icon: FaHome },
   { name: "Events", href: "/events", icon: FaCalendarAlt },
-  { name: "Schedule", href: "/schedule", icon: FaRegListAlt },
-  // {
-  //   name: "Dashboard",
-  //   href: "/dashboard",
-  //   icon: LayoutDashboardIcon,
-  // },
 ];
 export const QuickLinks: NavBarLinkType[] = [
   { name: "Home", href: "/", icon: FaHome },
   { name: "Events", href: "/events", icon: FaCalendarAlt },
-  { name: "Schedule", href: "/schedule", icon: FaRegListAlt },
-  // { name: "Dashboard", href: "/dashboard", icon: LayoutDashboardIcon },
   { name: "Contact Us", href: "/contact", icon: FaEnvelope },
   { name: "About Us", href: "/aboutus", icon: InfoIcon },
 ];
