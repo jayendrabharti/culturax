@@ -16,17 +16,17 @@ export const NavBarLinks: NavBarLinkType[] = [
   { name: "Home", href: "/", icon: FaHome },
   { name: "Events", href: "/events", icon: FaCalendarAlt },
   { name: "Schedule", href: "/schedule", icon: FaRegListAlt },
-  {
-    name: "Dashboard",
-    href: "/dashboard",
-    icon: LayoutDashboardIcon,
-  },
+  // {
+  //   name: "Dashboard",
+  //   href: "/dashboard",
+  //   icon: LayoutDashboardIcon,
+  // },
 ];
 export const QuickLinks: NavBarLinkType[] = [
   { name: "Home", href: "/", icon: FaHome },
   { name: "Events", href: "/events", icon: FaCalendarAlt },
   { name: "Schedule", href: "/schedule", icon: FaRegListAlt },
-  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboardIcon },
+  // { name: "Dashboard", href: "/dashboard", icon: LayoutDashboardIcon },
   { name: "Contact Us", href: "/contact", icon: FaEnvelope },
   { name: "About Us", href: "/aboutus", icon: InfoIcon },
 ];
