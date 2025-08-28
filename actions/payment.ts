@@ -72,8 +72,7 @@ export const logSuccessfullPayment = async ({
       });
     }
 
-    revalidatePath(`/events/${eventId}/register/pay`);
-    revalidatePath(`/events/${eventId}/register`);
+    revalidatePath(`/events/${eventId}`, "layout");
     return { data: { success: true }, errorMessage: null };
   } catch (error) {
     console.error("Error logging successful payment:", error);

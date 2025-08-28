@@ -32,8 +32,8 @@ export const createEvent = async (data: CleanedEventData) => {
     const event = await prisma.event.create({ data: eventData });
 
     revalidatePath("/");
-    revalidatePath("/events");
-    revalidatePath("/admin/events");
+    revalidatePath("/events", "layout");
+    revalidatePath("/admin/events", "layout");
 
     return { data: event, errorMessage: null };
   } catch (error) {
@@ -57,8 +57,8 @@ export const updateEvent = async (eventId: string, data: CleanedEventData) => {
     });
 
     revalidatePath("/");
-    revalidatePath("/events");
-    revalidatePath("/admin/events");
+    revalidatePath("/events", "layout");
+    revalidatePath("/admin/events", "layout");
 
     return { data: event, errorMessage: null };
   } catch (error) {
@@ -73,8 +73,8 @@ export const deleteEvent = async (eventId: string) => {
     });
 
     revalidatePath("/");
-    revalidatePath("/events");
-    revalidatePath("/admin/events");
+    revalidatePath("/events", "layout");
+    revalidatePath("/admin/events", "layout");
 
     return { data: null, errorMessage: null };
   } catch (error) {

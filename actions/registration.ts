@@ -106,8 +106,7 @@ export async function registerForIndividualEvent(
       },
     });
 
-    revalidatePath(`/events/${eventId}/register`);
-    revalidatePath(`/events/${eventId}`);
+    revalidatePath(`/events/${eventId}`, "layout");
     return { data: participant, errorMessage: null };
   } catch (error: any) {
     if (error.code === "P2002") {
@@ -256,8 +255,7 @@ export async function registerForTeamEvent(
       return { team, participants };
     });
 
-    revalidatePath(`/events/${event.id}/register`);
-    revalidatePath(`/events/${event.id}`);
+    revalidatePath(`/events/${event.id}`, "layout");
     return { data: result, errorMessage: null };
   } catch (error: any) {
     if (error.code === "P2002") {

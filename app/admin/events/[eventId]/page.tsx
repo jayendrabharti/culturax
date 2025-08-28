@@ -3,6 +3,16 @@ import RevealHero from "@/components/animations/RevealHero";
 import prisma from "@/prisma/client";
 import { notFound } from "next/navigation";
 
+export async function generateStaticParams() {
+  const events = await prisma.event.findMany({
+    select: { id: true },
+  });
+
+  return events.map((event) => ({
+    slug: event.id,
+  }));
+}
+
 export default async function AdminEventPage({
   params,
 }: {

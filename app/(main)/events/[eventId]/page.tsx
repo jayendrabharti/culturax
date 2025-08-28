@@ -19,6 +19,16 @@ import RichTextEditor from "@/components/RichTextEditor";
 import { Delta } from "quill";
 import TimestampDisplay from "@/components/TimeDisplay";
 
+export async function generateStaticParams() {
+  const events = await prisma.event.findMany({
+    select: { id: true },
+  });
+
+  return events.map((event) => ({
+    slug: event.id,
+  }));
+}
+
 export default async function EventsPage({
   params,
 }: {
