@@ -16,7 +16,14 @@ export const formatTimestamp = (
 ) => {
   if (!timestamp) return null;
 
-  const date = new Date(timestamp);
+  const date =
+    typeof timestamp === "string" || typeof timestamp === "number"
+      ? new Date(
+          new Date(timestamp).toLocaleString("en-US", {
+            timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          })
+        )
+      : new Date(timestamp);
   const day = date.getDate().toString().padStart(2, "0");
   const month = date.toLocaleString("default", { month: "short" });
   const year = date.getFullYear();

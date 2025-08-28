@@ -19,15 +19,20 @@ const contacts: Array<{
     phone: "+91 93681 72591",
   },
   {
+    name: "Aryan Kumar",
+    designation: "Iqlipse Founder",
+    phone: "+91 62066 31341",
+  },
+  {
+    name: "Gaurav",
+    designation: "Collegeye CEO",
+    phone: "+91 89300 29200",
+  },
+  {
     name: "Jayendra Bharti",
     designation: "Iqlipse CTO",
     phone: "+91 88005 34849",
     email: "jay.bharti2804@gmail.com",
-  },
-  {
-    name: "Aryan Kumar",
-    designation: "Iqlipse Founder",
-    phone: "+91 62066 31341",
   },
 ];
 
