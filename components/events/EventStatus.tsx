@@ -1,5 +1,5 @@
-import { formatTimestamp } from "@/utils/utils";
 import { Event } from "@prisma/client";
+import TimestampDisplay from "../TimeDisplay";
 
 export const EventStatus = ({ event }: { event: Event }) => {
   const now = new Date();
@@ -11,28 +11,31 @@ export const EventStatus = ({ event }: { event: Event }) => {
   if (now < registrationStartsAt) {
     return (
       <span className="text-sm text-muted-foreground">
-        Registration starts at {formatTimestamp(event.registrationStartsAt)}
+        Registration starts at{" "}
+        <TimestampDisplay timestamp={event.registrationStartsAt} />
       </span>
     );
   }
   if (now >= registrationStartsAt && now < registrationEndsAt) {
     return (
       <span className="text-sm text-green-600">
-        Registration ends in {formatTimestamp(event.registrationEndsAt)}
+        Registration ends in{" "}
+        <TimestampDisplay timestamp={event.registrationEndsAt} />
       </span>
     );
   }
   if (now >= registrationEndsAt && now < startsAt) {
     return (
       <span className="text-sm text-yellow-600">
-        Registration ended. Event starts at {formatTimestamp(event.startsAt)}
+        Registration ended. Event starts at{" "}
+        <TimestampDisplay timestamp={event.startsAt} />
       </span>
     );
   }
   if (now >= startsAt && now < endsAt) {
     return (
       <span className="text-sm text-blue-600">
-        Event ongoing. Ends at {formatTimestamp(event.endsAt)}
+        Event ongoing. Ends at <TimestampDisplay timestamp={event.endsAt} />
       </span>
     );
   }

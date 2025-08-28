@@ -1,4 +1,3 @@
-import { formatTimestamp } from "@/utils/utils";
 import { Event } from "@prisma/client";
 import {
   CalendarIcon,
@@ -11,6 +10,7 @@ import { EventStatus } from "./EventStatus";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { isRegistrationOpen } from "@/utils/events";
+import TimestampDisplay from "../TimeDisplay";
 
 export default function EventCard({
   event,
@@ -38,9 +38,11 @@ export default function EventCard({
       </div>
       <div className="flex flex-row items-center gap-2 text-base text-muted-foreground">
         <CalendarIcon size={18} />
-        <span>{`${formatTimestamp(event.startsAt)} - ${formatTimestamp(
-          event.endsAt
-        )}`}</span>
+        <span>
+          <TimestampDisplay timestamp={event.startsAt} />
+          {" - "}
+          <TimestampDisplay timestamp={event.endsAt} />
+        </span>
       </div>
       <EventStatus event={event} />
       <div className="flex flex-row items-center justify-end gap-3 w-full mt-2">

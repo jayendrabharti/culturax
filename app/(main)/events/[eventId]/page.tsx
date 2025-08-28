@@ -13,11 +13,11 @@ import {
   DollarSignIcon,
   UserPlus2Icon,
 } from "lucide-react";
-import { formatTimestamp } from "@/utils/utils";
 import { getEventStatus } from "@/utils/events";
 import Link from "next/link";
 import RichTextEditor from "@/components/RichTextEditor";
 import { Delta } from "quill";
+import TimestampDisplay from "@/components/TimeDisplay";
 
 export default async function EventsPage({
   params,
@@ -99,11 +99,15 @@ export default async function EventsPage({
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <CalendarIcon className="h-4 w-4 text-primary" />
-                  <span>{formatTimestamp(event.startsAt, 2)}</span>
+                  <span>
+                    {<TimestampDisplay timestamp={event.startsAt} format={2} />}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <ClockIcon className="h-4 w-4 text-primary" />
-                  <span>{formatTimestamp(event.startsAt, 1)}</span>
+                  <span>
+                    {<TimestampDisplay timestamp={event.startsAt} format={1} />}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <MapPinIcon className="h-4 w-4 text-primary" />
@@ -142,7 +146,12 @@ export default async function EventsPage({
                   <div className="flex items-center text-sm text-muted-foreground">
                     <ClockIcon className="mr-1 h-4 w-4" />
                     Registration ends:{" "}
-                    {formatTimestamp(event.registrationEndsAt, 2)}
+                    {
+                      <TimestampDisplay
+                        timestamp={event.registrationEndsAt}
+                        format={2}
+                      />
+                    }
                   </div>
                 )}
                 {eventStatusInfo.status === "ongoing" && (
@@ -154,7 +163,8 @@ export default async function EventsPage({
                 {eventStatusInfo.status === "ended" && (
                   <div className="flex items-center text-sm text-muted-foreground">
                     <ClockIcon className="mr-1 h-4 w-4" />
-                    Event ended on {formatTimestamp(event.endsAt, 2)}
+                    Event ended on{" "}
+                    {<TimestampDisplay timestamp={event.endsAt} format={2} />}
                   </div>
                 )}
               </div>
@@ -205,7 +215,12 @@ export default async function EventsPage({
                     <div>
                       <div className="font-semibold">Registration Opens</div>
                       <div className="text-sm text-muted-foreground">
-                        {formatTimestamp(event.registrationStartsAt, 1)}
+                        {
+                          <TimestampDisplay
+                            timestamp={event.registrationStartsAt}
+                            format={1}
+                          />
+                        }
                       </div>
                     </div>
                   </div>
@@ -214,7 +229,12 @@ export default async function EventsPage({
                     <div>
                       <div className="font-semibold">Registration Ends</div>
                       <div className="text-sm text-muted-foreground">
-                        {formatTimestamp(event.registrationEndsAt, 1)}
+                        {
+                          <TimestampDisplay
+                            timestamp={event.registrationEndsAt}
+                            format={1}
+                          />
+                        }
                       </div>
                     </div>
                   </div>
@@ -223,7 +243,12 @@ export default async function EventsPage({
                     <div>
                       <div className="font-semibold">Event Starts</div>
                       <div className="text-sm text-muted-foreground">
-                        {formatTimestamp(event.startsAt, 1)}
+                        {
+                          <TimestampDisplay
+                            timestamp={event.startsAt}
+                            format={1}
+                          />
+                        }
                       </div>
                     </div>
                   </div>
@@ -232,7 +257,12 @@ export default async function EventsPage({
                     <div>
                       <div className="font-semibold">Event Ends</div>
                       <div className="text-sm text-muted-foreground">
-                        {formatTimestamp(event.endsAt, 1)}
+                        {
+                          <TimestampDisplay
+                            timestamp={event.endsAt}
+                            format={1}
+                          />
+                        }
                       </div>
                     </div>
                   </div>
@@ -359,7 +389,12 @@ export default async function EventsPage({
                   {eventStatusInfo.canRegister && (
                     <p className="text-xs text-muted-foreground">
                       Registration closes on{" "}
-                      {formatTimestamp(event.registrationEndsAt, 2)}
+                      {
+                        <TimestampDisplay
+                          timestamp={event.registrationEndsAt}
+                          format={2}
+                        />
+                      }
                     </p>
                   )}
                   {eventStatusInfo.status === "ongoing" && (
@@ -369,7 +404,8 @@ export default async function EventsPage({
                   )}
                   {eventStatusInfo.status === "ended" && (
                     <p className="text-xs text-muted-foreground">
-                      Event ended on {formatTimestamp(event.endsAt, 2)}
+                      Event ended on{" "}
+                      {<TimestampDisplay timestamp={event.endsAt} format={2} />}
                     </p>
                   )}
                 </div>

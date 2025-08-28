@@ -34,8 +34,8 @@ import {
 } from "@/components/ui/sheet";
 import Image from "next/image";
 import { setPaymentStatus } from "@/actions/payment";
-import { formatTimestamp } from "@/utils/utils";
 import { toast } from "sonner";
+import TimestampDisplay from "@/components/TimeDisplay";
 
 export type Payment = {
   id: string;
@@ -527,7 +527,7 @@ export const columns: ColumnDef<Payment>[] = [
       const paidAt = row.getValue("paidAt") as Date | null;
       return (
         <div className="text-sm">
-          {paidAt ? formatTimestamp(paidAt) : "N/A"}
+          {paidAt ? <TimestampDisplay timestamp={paidAt} /> : "N/A"}
         </div>
       );
     },

@@ -10,20 +10,10 @@ export const getErrorMessage = (
   return errorMessage;
 };
 
-export const formatTimestamp = (
-  timestamp: string | number | Date,
-  format = 1
-) => {
+export const formatTimestamp = (timestamp: Date, format: 1 | 2 = 1) => {
   if (!timestamp) return null;
 
-  const date =
-    typeof timestamp === "string" || typeof timestamp === "number"
-      ? new Date(
-          new Date(timestamp).toLocaleString("en-US", {
-            timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-          })
-        )
-      : new Date(timestamp);
+  const date = new Date(timestamp);
   const day = date.getDate().toString().padStart(2, "0");
   const month = date.toLocaleString("default", { month: "short" });
   const year = date.getFullYear();
