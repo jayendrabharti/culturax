@@ -16,13 +16,13 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, CreditCard, AlertTriangle, Users } from "lucide-react";
 
-export async function generateStaticParams() {
+export async function generateStaticParams(): Promise<{ eventId: string }[]> {
   const events = await prisma.event.findMany({
     select: { id: true },
   });
 
   return events.map((event) => ({
-    slug: event.id,
+    eventId: event.id,
   }));
 }
 

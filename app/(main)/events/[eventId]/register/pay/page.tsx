@@ -20,13 +20,13 @@ interface PaymentPageProps {
   }>;
 }
 
-export async function generateStaticParams() {
+export async function generateStaticParams(): Promise<{ eventId: string }[]> {
   const events = await prisma.event.findMany({
     select: { id: true },
   });
 
   return events.map((event) => ({
-    slug: event.id,
+    eventId: event.id,
   }));
 }
 
