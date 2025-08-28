@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import DeleteEventButton from "./DeleteEventButton";
 import { Badge } from "@/components/ui/badge";
+import TimestampDisplay from "@/components/TimeDisplay";
 
 export default function EventCard({ event }: { event: Event }) {
   return (
@@ -37,11 +38,11 @@ export default function EventCard({ event }: { event: Event }) {
         </p>
         <p className="text-sm mb-1">
           <span className="font-semibold">Starts:</span>{" "}
-          {new Date(event.startsAt).toLocaleString()}
+          <TimestampDisplay timestamp={event.startsAt} />
         </p>
         <p className="text-sm mb-1">
           <span className="font-semibold">Ends:</span>{" "}
-          {new Date(event.endsAt).toLocaleString()}
+          <TimestampDisplay timestamp={event.endsAt} />
         </p>
 
         <Separator className="my-2" />
