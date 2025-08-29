@@ -19,15 +19,7 @@ import RichTextEditor from "@/components/RichTextEditor";
 import { Delta } from "quill";
 import TimestampDisplay from "@/components/TimeDisplay";
 
-export async function generateStaticParams(): Promise<{ eventId: string }[]> {
-  const events = await prisma.event.findMany({
-    select: { id: true },
-  });
-
-  return events.map((event) => ({
-    eventId: event.id,
-  }));
-}
+export const dynamic = "force-dynamic";
 
 export default async function EventsPage({
   params,

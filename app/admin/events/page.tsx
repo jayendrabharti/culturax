@@ -5,6 +5,8 @@ import prisma from "@/prisma/client";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 export default async function EventsAdminPage() {
   const events = await prisma.event.findMany({ orderBy: { createdAt: "asc" } });
 

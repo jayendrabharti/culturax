@@ -3,6 +3,8 @@ import EventsSection from "@/components/home/EventsSection";
 import { prisma } from "@/prisma/client";
 import AboutUsPage from "./aboutus/page";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   // Fetch events for the events section
   const events = await prisma.event.findMany({

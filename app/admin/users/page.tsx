@@ -3,6 +3,8 @@ import { DataTable } from "@/components/admin/users/data-table";
 import RevealHero from "@/components/animations/RevealHero";
 import prisma from "@/prisma/client";
 
+export const dynamic = "force-dynamic";
+
 export default async function UsersPage() {
   const profiles = await prisma.profile.findMany({
     orderBy: {

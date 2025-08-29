@@ -3,6 +3,8 @@ import { DataTable } from "@/components/admin/payments/data-table";
 import RevealHero from "@/components/animations/RevealHero";
 import prisma from "@/prisma/client";
 
+export const dynamic = "force-dynamic";
+
 export default async function PaymentsPage() {
   const payments = await prisma.payments.findMany({
     orderBy: {

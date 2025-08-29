@@ -2,6 +2,8 @@ import RevealHero from "@/components/animations/RevealHero";
 import EventCard from "@/components/events/EventCard";
 import prisma from "@/prisma/client";
 
+export const dynamic = "force-dynamic";
+
 export default async function EventsPage() {
   const events = await prisma.event.findMany({ orderBy: { createdAt: "asc" } });
 

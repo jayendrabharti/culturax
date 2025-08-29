@@ -5,6 +5,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/authOptions";
 import Unauthenticated from "@/components/auth/Unauthenticated";
 
+export const dynamic = "force-dynamic";
+
 export default async function ProfilePage() {
   const userSession = (await getServerSession(
     authOptions
