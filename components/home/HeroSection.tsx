@@ -20,9 +20,7 @@ export default function HeroSection() {
   return (
     <section
       className={cn(
-        "min-h-[calc(100vh-70px)]",
-        "w-full",
-        "flex flex-col items-center justify-around"
+        "min-h-[calc(100vh-70px)] w-full flex flex-col items-center justify-between py-8"
       )}
     >
       <Reveal
@@ -103,8 +101,16 @@ export default function HeroSection() {
         </div>
       </Reveal>
 
-      <div className="flex flex-col md:flex-row justify-around gap-5 px-5">
-        <div className="w-full flex flex-col items-center text-center">
+      <div className="flex flex-col-reverse md:flex-row items-center justify-center gap-10 w-full px-5 max-w-7xl mx-auto">
+        {/* Hero Images Section */}
+        <div className="w-full md:w-1/2 flex items-center justify-center">
+          <div className="w-full max-w-2xl mx-auto p-2 md:p-4">
+            <HeroImages className="w-full" />
+          </div>
+        </div>
+
+        {/* Main Hero Content */}
+        <div className="w-full md:w-1/2 flex flex-col items-center text-center">
           <Reveal delay={0.1} className="mb-10">
             <Link href={"/events"}>
               <RainbowButton
@@ -169,7 +175,7 @@ export default function HeroSection() {
           </Reveal>
         </div>
 
-        <HeroImages />
+        {/* moved above for better layout */}
       </div>
 
       <div></div>
