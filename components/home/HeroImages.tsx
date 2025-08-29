@@ -30,6 +30,39 @@ const images = [
     src: "/images/hero/img6.png",
     alt: "Image 6",
   },
+  {
+    src: "/images/hero/img7.png",
+    alt: "Image 7",
+  },
+  {
+    src: "/images/hero/img8.png",
+    alt: "Image 8",
+  },
+  {
+    src: "/images/hero/img9.png",
+    alt: "Image 9",
+  },
+  {
+    src: "/images/hero/img10.png",
+    alt: "Image 10",
+  },
+
+  {
+    src: "/images/hero/img11.png",
+    alt: "Image 11",
+  },
+  {
+    src: "/images/hero/img12.png",
+    alt: "Image 12",
+  },
+  {
+    src: "/images/hero/img13.png",
+    alt: "Image 13",
+  },
+  {
+    src: "/images/hero/img14.png",
+    alt: "Image 14",
+  },
 ];
 
 export default function HeroImages({ className = "" }: { className?: string }) {
