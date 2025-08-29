@@ -13,17 +13,31 @@ import { ReactNode } from "react";
 export const dynamic = "force-dynamic";
 
 export default async function AdminPage() {
-  const [profileCount, eventCount, participantCount, moneyCollected] =
-    await prisma.$transaction([
-      prisma.profile.count(),
-      prisma.event.count(),
-      prisma.participant.count(),
-      prisma.payments.aggregate({
-        _sum: {
-          amount: true,
-        },
-      }),
-    ]);
+  const [
+    profileCount,
+    eventCount,
+    teamCount,
+    totalParticipantCount,
+    individualParticipantCount,
+    moneyCollected,
+    paymentCount,
+  ] = await prisma.$transaction([
+    prisma.profile.count(),
+    prisma.event.count(),
+    prisma.team.count(),
+    prisma.participant.count(),
+    prisma.participant.count({
+      where: {
+        teamId: null,
+      },
+    }),
+    prisma.payments.aggregate({
+      _sum: {
+        amount: true,
+      },
+    }),
+    prisma.payments.count(),
+  ]);
 
   const overviewData: {
     title: string;
@@ -47,13 +61,30 @@ export default async function AdminPage() {
       linkLabel: "View all events",
     },
     {
-      title: "Participants",
-      value: participantCount,
+      title: "Teams",
+      value: teamCount,
+      icon: <UserIcon />,
+    },
+    {
+      title: "Individual Participants",
+      value: individualParticipantCount,
+      icon: <UserIcon />,
+    },
+    {
+      title: "Total Participants",
+      value: totalParticipantCount,
       icon: <UserIcon />,
     },
     {
       title: "Money Collected",
       value: `₹ ${moneyCollected?._sum?.amount ?? 0}`,
+      icon: <DollarSignIcon />,
+      link: "/admin/payments",
+      linkLabel: "View all payments",
+    },
+    {
+      title: "Payments",
+      value: `${paymentCount} / ${teamCount + individualParticipantCount}`,
       icon: <DollarSignIcon />,
       link: "/admin/payments",
       linkLabel: "View all payments",
