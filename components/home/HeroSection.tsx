@@ -155,7 +155,7 @@ export default function HeroSection() {
             <div className="flex flex-row flex-wrap justify-center gap-4">
               <Link href={"/events"}>
                 <Button>
-                  Registration Now
+                  Register Now
                   <ArrowRightIcon />
                 </Button>
               </Link>
