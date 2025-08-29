@@ -10,9 +10,9 @@ import {
   Users,
   User,
   FileText,
+  XIcon,
 } from "lucide-react";
 import { useState } from "react";
-
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
@@ -36,6 +36,7 @@ import Image from "next/image";
 import { setPaymentStatus } from "@/actions/payment";
 import { toast } from "sonner";
 import TimestampDisplay from "@/components/TimeDisplay";
+import { AnimatePresence, motion } from "framer-motion";
 
 export type Payment = {
   id: string;
@@ -191,7 +192,7 @@ const ParticipantDialog = ({
 };
 
 const ImageModal = ({ imageUrl }: { imageUrl: string }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   return (
     <>
@@ -199,8 +200,38 @@ const ImageModal = ({ imageUrl }: { imageUrl: string }) => {
         <Eye className="h-3 w-3 mr-1" />
         View
       </Button>
-
-      {isOpen && (
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            className="bg-[rgba(0,0,0,0.8)] fixed flex w-full h-full top-0 left-0 z-[200] justify-center items-center text-white"
+            onClick={() => {
+              setIsOpen(false);
+            }}
+          >
+            <Button
+              variant={"destructive"}
+              size="sm"
+              onClick={() => setIsOpen(false)}
+              className="absolute top-0 right-0 rounded-none rounded-bl-md"
+            >
+              Close <XIcon />
+            </Button>
+            <div className="max-w-full max-h-full flex justify-center items-center">
+              <Image
+                src={imageUrl}
+                alt="receipt"
+                width={500}
+                height={500}
+                className="max-w-dvw max-h-dvh object-contain"
+              />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {/* {isOpen && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
           onClick={() => setIsOpen(false)}
@@ -224,7 +255,7 @@ const ImageModal = ({ imageUrl }: { imageUrl: string }) => {
             />
           </div>
         </div>
-      )}
+      )} */}
     </>
   );
 };
@@ -405,14 +436,6 @@ export const columns: ColumnDef<Payment>[] = [
     },
   },
   {
-    accessorKey: "paymentMethod",
-    header: "Payment Method",
-    cell: ({ row }) => {
-      const method = row.getValue("paymentMethod") as string | null;
-      return <div>{method || "N/A"}</div>;
-    },
-  },
-  {
     accessorKey: "transactionId",
     header: "Transaction ID",
     cell: ({ row }) => {
@@ -437,19 +460,17 @@ export const columns: ColumnDef<Payment>[] = [
     },
   },
   {
-    id: "team",
-    header: "Team",
+    id: "team_participant",
+    header: "Team / Participant",
     cell: ({ row }) => {
       const payment = row.original;
-      return <TeamDialog team={payment.team} />;
-    },
-  },
-  {
-    id: "participant",
-    header: "Participant",
-    cell: ({ row }) => {
-      const payment = row.original;
-      return <ParticipantDialog participant={payment.participant} />;
+      return (
+        <>
+          <TeamDialog team={payment.team} />
+          {" / "}
+          <ParticipantDialog participant={payment.participant} />
+        </>
+      );
     },
   },
   {
@@ -460,7 +481,7 @@ export const columns: ColumnDef<Payment>[] = [
 
       return (
         <div className="flex gap-1">
-          {payment.status !== "UNVERIFIED" && (
+          {payment.status !== "COMPLETED" && (
             <Button
               variant="outline"
               size="sm"
@@ -482,7 +503,7 @@ export const columns: ColumnDef<Payment>[] = [
               Failed
             </Button>
           )}
-          {payment.status !== "FAILED" && (
+          {payment.status !== "UNVERIFIED" && (
             <Button
               variant="outline"
               size="sm"

@@ -110,17 +110,6 @@ export function DataTable<TData, TValue>({
           </SelectContent>
         </Select>
 
-        <Input
-          placeholder="Filter by payment method..."
-          value={
-            (table.getColumn("paymentMethod")?.getFilterValue() as string) ?? ""
-          }
-          onChange={(event) =>
-            table.getColumn("paymentMethod")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
-
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
