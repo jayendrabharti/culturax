@@ -1,24 +1,42 @@
-import { columns } from "@/components/admin/users/columns";
-import { DataTable } from "@/components/admin/users/data-table";
+"use client";
+
+import { getUsers, getUsersCount } from "@/actions/admin";
+import UsersList from "@/components/admin/users/UsersList";
 import RevealHero from "@/components/animations/RevealHero";
-import prisma from "@/prisma/client";
+import { Profile } from "@prisma/client";
+import { LoaderCircleIcon } from "lucide-react";
+import { useEffect, useState, useTransition } from "react";
 
-export const dynamic = "force-dynamic";
+export default function UsersPage() {
+  const [usersCount, setUsersCount] = useState<number | null>(null);
+  const [users, setUsers] = useState<Profile[]>([]);
+  const [loading, startLoading] = useTransition();
 
-export default async function UsersPage() {
-  const profiles = await prisma.profile.findMany({
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+  useEffect(() => {
+    getUsersCount().then(setUsersCount);
+  }, []);
+
+  useEffect(() => {
+    startLoading(async () => {
+      await getUsers({
+        orderBy: { createdAt: "asc" },
+      }).then(setUsers);
+    });
+  }, []);
 
   return (
     <section className="flex w-full flex-col items-center p-2">
       <RevealHero className="font-extrabold text-3xl">
-        Users Management
+        Users ( {usersCount ? usersCount : "Loading..."} )
       </RevealHero>
       <div className="w-full">
-        <DataTable columns={columns} data={profiles} />
+        {loading ? (
+          <div className="p-10 w-full">
+            <LoaderCircleIcon className="animate-spin mx-auto size-16" />
+          </div>
+        ) : (
+          <UsersList users={users} />
+        )}
       </div>
     </section>
   );
