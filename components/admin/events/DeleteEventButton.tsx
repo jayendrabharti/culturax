@@ -26,7 +26,7 @@ export default function DeleteEventButton({ eventId }: { eventId: string }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant={"destructive"}>
+        <Button variant={"destructive"} size={"sm"}>
           Delete <Trash2Icon />
         </Button>
       </DialogTrigger>

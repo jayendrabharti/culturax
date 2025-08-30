@@ -41,7 +41,7 @@ export default async function AdminLayout({
   }
 
   return (
-    <Main className="bg-background text-foreground grid h-dvh min-h-dvh w-full grid-rows-[auto_1fr]">
+    <Main className="bg-background text-foreground grid h-full max-h-dvh w-full grid-rows-[auto_1fr]">
       <div className="flex min-h-screen flex-row">
         <AdminSideBar className="hidden md:block" />
         <div className="flex flex-1 flex-col">
